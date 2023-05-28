@@ -3,69 +3,67 @@ import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Dropdown } from 'primereact/dropdown';
-import { useReducer, useEffect,useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useQueryClient, useMutation } from 'react-query';
+import getConfig from 'next/config';
 
 const FormLayoutDemo = () => {
-    const ref_id=useRef(0);
-   
-    
-    
-    const PROTOCOLANDHOSTNAMEPARTOFTHEURL = 'http://localhost:5050/';
-   
+    const ref_id = useRef(0);
+    const { publicRuntimeConfig } = getConfig();
+    const { BASE_URL } = publicRuntimeConfig;
+    const GET_CONTACTINFO_ENDPOINT = BASE_URL + '/contactInfo';
+    const UPDATE_CONTACTINFO_ENDPOINT = BASE_URL + '/contactInfo/update/';
+
     useEffect(() => {
-        
-        fetch(PROTOCOLANDHOSTNAMEPARTOFTHEURL + 'contactInfo')
+
+        fetch(GET_CONTACTINFO_ENDPOINT)
             .then((response) => response.json())
             .then((data) => {
-                ref_id.current=data[0]._id
-                
+                ref_id.current = data[0]._id
+
                 setSiegeSocial(data[0].siegeSocial)
                 setNumeroTelephone(data[0].numeroTelephone)
                 setEmail(data[0].email)
                 setLocalisation(data[0].localisation)
                 setLienFacebook(data[0].lienFacebook)
-                
+
             })
             .catch((error) => console.log(error));
     }, []);
-    
+
     const [siegeSocial, setSiegeSocial] = useState('');
     const [numeroTelephone, setNumeroTelephone] = useState('');
     const [email, setEmail] = useState('');
     const [localisation, setLocalisation] = useState('');
     const [lienFacebook, setLienFacebook] = useState('');
 
-    
-   
+
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const temp_contactInfo = {};
-
-
-        const _id=ref_id.current
-        const contactInfo={_id,siegeSocial, numeroTelephone, email, localisation, lienFacebook}
+        const _id = ref_id.current
+        const contactInfo = { _id, siegeSocial, numeroTelephone, email, localisation, lienFacebook }
         console.log(contactInfo);
-        
-        
+
+
         try {
-           
-            const response = await fetch('http://localhost:5050/contactInfo/update/' + _id, {
+
+            const response = await fetch(UPDATE_CONTACTINFO_ENDPOINT + _id, {
                 method: 'PUT',
                 body: JSON.stringify(contactInfo),
                 credentials: 'include',
                 headers: {
                     "Content-Type": "application/json",
-                  }
+                }
             });
             console.log(response);
-        
+
         } catch (error) {
             console.log(error);
         }
-        
+
     };
 
     return (

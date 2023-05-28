@@ -4,8 +4,12 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
+import getConfig from 'next/config';
 
 export default function BasicFilterDemo() {
+    const { publicRuntimeConfig } = getConfig();
+    const { BASE_URL } = publicRuntimeConfig;
+    const GET_CORDONNE_CLIENTS_ENDPOINT = BASE_URL + '/coordonneClient';
     const [contactsInfo, setContactsInfo] = useState(null);
     const [filters, setFilters] = useState({
         global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -22,7 +26,7 @@ export default function BasicFilterDemo() {
 
 
     useEffect(() => {
-        fetch('http://localhost:5050/coordonneClient').then((response) =>
+        fetch(GET_CORDONNE_CLIENTS_ENDPOINT).then((response) =>
             response.json()).then((data) => {
                 console.log(data);
                 setContactsInfo(data);
@@ -78,14 +82,14 @@ export default function BasicFilterDemo() {
         <div className="card">
             <DataTable value={contactsInfo} paginator rows={10} dataKey="id" filters={filters} filterDisplay="row" loading={loading}
                 globalFilterFields={['nom', 'prenom', 'numeroTelephone', 'age', 'email', 'fonction', 'localisation']} header={header} emptyMessage="No customers found.">
-                <Column field="nom" header="nom" filter filterPlaceholder="Search by name" style={{ minWidth: '12rem' }} showFilterMenu={false}/>
+                <Column field="nom" header="nom" filter filterPlaceholder="Search by name" style={{ minWidth: '12rem' }} showFilterMenu={false} />
                 <Column field="prenom" header="prenom" filterField="prenom" style={{ minWidth: '12rem' }} filter filterPlaceholder="Search by country" showFilterMenu={false} />
                 <Column field="numeroTelephone" header="numeroTelephone" filterField="numeroTelephone" filterPlaceholder="Search by name" style={{ minWidth: '12rem' }}
-                    filter showFilterMenu={false}/>
-                <Column field="age" header="age" style={{ minWidth: '12rem' }} filter filterPlaceholder="Search by age" showFilterMenu={false}/>
-                <Column field="email" header="email" style={{ minWidth: '12rem' }} filter filterPlaceholder="Search by age" showFilterMenu={false}/>
-                <Column field="fonction" header="fonction" filter filterPlaceholder="Search by fonction" style={{ minWidth: '12rem' }} showFilterMenu={false}/>
-                <Column field="localisation" header="localisation" filter filterPlaceholder="Search by localisation" style={{ minWidth: '12rem' }} showFilterMenu={false}/>
+                    filter showFilterMenu={false} />
+                <Column field="age" header="age" style={{ minWidth: '12rem' }} filter filterPlaceholder="Search by age" showFilterMenu={false} />
+                <Column field="email" header="email" style={{ minWidth: '12rem' }} filter filterPlaceholder="Search by age" showFilterMenu={false} />
+                <Column field="fonction" header="fonction" filter filterPlaceholder="Search by fonction" style={{ minWidth: '12rem' }} showFilterMenu={false} />
+                <Column field="localisation" header="localisation" filter filterPlaceholder="Search by localisation" style={{ minWidth: '12rem' }} showFilterMenu={false} />
             </DataTable>
         </div>
     );

@@ -3,10 +3,7 @@ import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Dropdown } from 'primereact/dropdown';
-import { useReducer } from 'react';
 import { FileUpload } from 'primereact/fileupload';
-import { useQueryClient, useMutation } from 'react-query';
-import Link from 'next/link';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 
@@ -16,10 +13,11 @@ import { Toast } from 'primereact/toast';
 import { ProgressBar } from 'primereact/progressbar';
 import { Tooltip } from 'primereact/tooltip';
 import { Tag } from 'primereact/tag';
+import getConfig from 'next/config';
 
 
 const FormLayoutDemo = ({data}) => {
-    
+
 ///////////////////////////////////////////
 
 const toast = useRef(null);
@@ -29,10 +27,10 @@ const fileUploadRef = useRef(null);
 const onTemplateSelect = (e) => {
     let _totalSize = totalSize;
     let files = e.files;
-    
+
     Object.keys(files).forEach((key) => {
         _totalSize += files[key].size || 0;
-        
+
     });
 
     setTotalSize(_totalSize);
@@ -119,9 +117,6 @@ const cancelOptions = { icon: 'pi pi-fw pi-times', iconOnly: true, className: 'c
 
     /////////////////////////////////////
 
-
-
-
     const router = useRouter();
     const [titre, setTitre] = useState(data.titre);
     const [adresse, setAdresse] = useState(data.adresse);
@@ -137,6 +132,9 @@ const cancelOptions = { icon: 'pi pi-fw pi-times', iconOnly: true, className: 'c
         { name: 'Maison raccordée STEG', code: 'Maison raccordée STEG' },
         { name: 'Maison non raccordée STEG', code: 'Maison non raccordée STEG' }
     ];
+    const { publicRuntimeConfig } = getConfig();
+    const { BASE_URL } = publicRuntimeConfig;
+    const UPDATE_PROJECT_ENDPOINT = BASE_URL + '/projet/update/'
 
 
     useEffect(() => {
@@ -152,7 +150,7 @@ const cancelOptions = { icon: 'pi pi-fw pi-times', iconOnly: true, className: 'c
         if (images!== undefined && images!== null) {
             if(!Array.isArray(images))
                 {formData.append('images', images);}
-                else{   
+                else{
                     images?.forEach((image) => {
                     formData.append('images', image);
                 });}
@@ -164,17 +162,17 @@ const cancelOptions = { icon: 'pi pi-fw pi-times', iconOnly: true, className: 'c
         formData.append('description', description);
         formData.append('productionAnuelle', productionAnuelle);
         formData.append('video', video);
-        
+
         if(typeof type === 'object'){formData.append('type', type?.name);}
         else{formData.append('type', type);}
-        
+
         console.log('houni images', images);
 
-        
+
 
         try {
             if (titre !== '' && adresse !== '' && description !== '' && productionAnuelle !== '' && type !== null ) {
-                const response = await fetch('http://localhost:5050/projet/update/' + _id, {
+                const response = await fetch(UPDATE_PROJECT_ENDPOINT + _id, {
                     method: 'PUT',
                     body: formData,
                     credentials: 'include'
@@ -186,7 +184,7 @@ const cancelOptions = { icon: 'pi pi-fw pi-times', iconOnly: true, className: 'c
             console.log(error);
         }
         console.log(FormData);
-        
+
     };
 
     return (
@@ -238,7 +236,7 @@ const cancelOptions = { icon: 'pi pi-fw pi-times', iconOnly: true, className: 'c
 
                         <div className="field col-12 ">
                             <label htmlFor="state">video</label>
-                            <FileUpload name="myFile" className="custom-file-upload" 
+                            <FileUpload name="myFile" className="custom-file-upload"
                                 customUpload onSelect={(e) => {
                                     setVideo(e.files[0])
                                 }}
@@ -260,10 +258,7 @@ const cancelOptions = { icon: 'pi pi-fw pi-times', iconOnly: true, className: 'c
 
 
 FormLayoutDemo.getInitialProps = async ({ query }) => {
-    // Fetch data using the query parameter
     const data = query;
-  
-    // Return the data as props
     return { data };
   };
 

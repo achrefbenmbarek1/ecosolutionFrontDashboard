@@ -5,14 +5,16 @@ import { LayoutContext } from './context/layoutcontext';
 import { MenuProvider } from './context/menucontext';
 import { useRouter } from 'next/router';
 import { removeCookie } from '../demo/utils/cookieUtils';
-// import Cookies from 'js-cookie';
 
 const AppMenu = () => {
+    const { publicRuntimeConfig } = getConfig();
+    const { BASE_URL } = publicRuntimeConfig;
+    const LOGOUT_ENDPOINT = BASE_URL + '/admin/logout'
     const router = useRouter();
     const { layoutConfig } = useContext(LayoutContext);
     const contextPath = getConfig().publicRuntimeConfig.contextPath;
     const handleLogout = async () => {
-        const response = await fetch('http://localhost:5050/admin/logout', {
+        const response = await fetch(LOGOUT_ENDPOINT, {
             method: 'POST',
             credentials: 'include',
             body: JSON.stringify({}),
@@ -21,10 +23,6 @@ const AppMenu = () => {
             }
         })
         if (response.ok) {
-            // if (Cookies.get('authenticated')) {
-            //     Cookies.remove('authenticated');
-            // }
-            // Cookies.set('authenticated','false');
             removeCookie('authenticated');
             router.push('/');
         }
@@ -93,10 +91,10 @@ const AppMenu = () => {
                 { label: 'Logout', icon: 'pi pi-fw pi-sign-out', command: handleLogout }
             ]
         },
-        {
-            label: 'Partie Front',
-            items: [{ label: 'Aller sur le site web', icon: 'pi pi-fw pi-globe', to: '/landing' }]
-        }
+        // {
+        //     label: 'Partie Front',
+        //     items: [{ label: 'Aller sur le site web', icon: 'pi pi-fw pi-globe', to: '/landing' }]
+        // }
     ];
 
     return (

@@ -3,6 +3,7 @@ import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 
 import { useEffect, useRef } from 'react';
+import getConfig from 'next/config';
 
 
 const FormIndicateurPage = () => {
@@ -11,14 +12,14 @@ const FormIndicateurPage = () => {
     const refIndicateurCarbone = useRef(0);
     const refIndicateurNombreDeProjet = useRef(0);
     const [key, setKey] = useState(0);
-
-
-
-    const PROTOCOLANDHOSTNAMEPARTOFTHEURL = 'http://localhost:5050/';
+    const { publicRuntimeConfig } = getConfig();
+    const { BASE_URL } = publicRuntimeConfig;
+    const GET_INDICATEUR_ENDPOINT = BASE_URL + '/indicateur';
+    const UPDATE_INDICATEUR_ENDPOINT = BASE_URL + '/indicateur/update/';
 
     useEffect(() => {
 
-        fetch(PROTOCOLANDHOSTNAMEPARTOFTHEURL + 'indicateur')
+        fetch(GET_INDICATEUR_ENDPOINT)
             .then((response) => response.json())
             .then((data) => {
                 ref_id.current = data[0]._id
@@ -49,7 +50,7 @@ const FormIndicateurPage = () => {
 
         try {
             if (regexFloat.test(indicateurPuissance) && regexFloat.test(indicateurCarbone) && regexInt.test(indicateurNombreDeProjet)) {
-                const response = await fetch('http://localhost:5050/indicateur/update/' + _id, {
+                const response = await fetch(UPDATE_INDICATEUR_ENDPOINT + _id, {
                     method: 'PUT',
                     body: JSON.stringify(indicateur),
                     credentials: 'include',

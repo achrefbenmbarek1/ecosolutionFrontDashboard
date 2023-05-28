@@ -14,6 +14,7 @@ import { Toast } from 'primereact/toast';
 import { ProgressBar } from 'primereact/progressbar';
 import { Tooltip } from 'primereact/tooltip';
 import { Tag } from 'primereact/tag';
+import getConfig from 'next/config';
 const FormLayoutDemo = ({ data }) => {
     ///////////////////////////////////////////
 
@@ -110,6 +111,9 @@ const FormLayoutDemo = ({ data }) => {
 
     /////////////////////////////////////
 
+    const { publicRuntimeConfig } = getConfig();
+    const { BASE_URL } = publicRuntimeConfig;
+    const UPDATE_ARTICLE_ENDPOINT = BASE_URL + '/article/update/'
     const router = useRouter();
     const [images, setImages] = useState(data.images);
     const [titre, setTitre] = useState(data.titre);
@@ -136,7 +140,7 @@ const FormLayoutDemo = ({ data }) => {
 
         try {
             if (description !== '' && titre !== '' && contenu !== '') {
-                const response = await fetch('http://localhost:5050/article/update/' + _id, {
+                const response = await fetch(UPDATE_ARTICLE_ENDPOINT + _id, {
                     method: 'PUT',
                     body: formData,
                     credentials: 'include'
@@ -170,11 +174,11 @@ const FormLayoutDemo = ({ data }) => {
                             <label htmlFor="contenu">Contenu</label>
                             <InputTextarea id="contenu" name="contenu" onChange={(e) => setContenu(e.target.value)} rows="4" defaultValue={data.contenu} />
                         </div>
+
                         <div className="field col-12 ">
                             <label>Images</label>
                             <div>
                                 <Toast ref={toast}></Toast>
-
                                 <Tooltip target=".custom-choose-btn" content="Choose" position="bottom" />
                                 <Tooltip target=".custom-upload-btn" content="Upload" position="bottom" />
                                 <Tooltip target=".custom-cancel-btn" content="Clear" position="bottom" />

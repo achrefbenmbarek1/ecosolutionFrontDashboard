@@ -3,6 +3,7 @@ import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 
 import { useEffect, useRef } from 'react';
+import getConfig from 'next/config';
 
 
 const FormLayoutDemo = () => {
@@ -10,14 +11,14 @@ const FormLayoutDemo = () => {
     const refPuissanceAllemande = useRef(0);
     const refPuissanceChinoise = useRef(0);
     const [key, setKey] = useState(0);
-
-
-
-    const PROTOCOLANDHOSTNAMEPARTOFTHEURL = 'http://localhost:5050/';
+    const { publicRuntimeConfig } = getConfig();
+    const { BASE_URL } = publicRuntimeConfig;
+    const GET_PUISSANCE_ENDPOINT = BASE_URL + '/puissance';
+    const UPDATE_PUISSANCE_ENDPOINT = BASE_URL + '/puissance/update/';
 
     useEffect(() => {
 
-        fetch(PROTOCOLANDHOSTNAMEPARTOFTHEURL + 'puissance')
+        fetch(GET_PUISSANCE_ENDPOINT)
             .then((response) => response.json())
             .then((data) => {
                 ref_id.current = data[0]._id
@@ -44,7 +45,7 @@ const FormLayoutDemo = () => {
 
         try {
             if (regex.test(puissanceAllemande) && regex.test(puissanceChinoise)) {
-                const response = await fetch('http://localhost:5050/puissance/update/' + _id, {
+                const response = await fetch(UPDATE_PUISSANCE_ENDPOINT + _id, {
                     method: 'PUT',
                     body: JSON.stringify(puissance),
                     credentials: 'include',

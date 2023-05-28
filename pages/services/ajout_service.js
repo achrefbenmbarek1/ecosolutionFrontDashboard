@@ -2,11 +2,7 @@ import React, { useState, useRef } from 'react';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { InputTextarea } from 'primereact/inputtextarea';
-import { Dropdown } from 'primereact/dropdown';
-import { useReducer } from 'react';
 import { FileUpload } from 'primereact/fileupload';
-import { useQueryClient, useMutation } from 'react-query';
-import Link from 'next/link';
 
 import { useRouter } from 'next/router'
 
@@ -16,6 +12,7 @@ import { Toast } from 'primereact/toast';
 import { ProgressBar } from 'primereact/progressbar';
 import { Tooltip } from 'primereact/tooltip';
 import { Tag } from 'primereact/tag';
+import getConfig from 'next/config';
 
 const FormLayoutDemo = () => {
     ///////////////////////////////////////////
@@ -116,13 +113,13 @@ const FormLayoutDemo = () => {
     const cancelOptions = { icon: 'pi pi-fw pi-times', iconOnly: true, className: 'custom-cancel-btn p-button-danger p-button-rounded p-button-outlined' };
 
     /////////////////////////////////////
-
-
-
-
     const [image, setImage] = useState(null);
     const [titre, setTitre] = useState('');
     const [description, setDescription] = useState('');
+    const { publicRuntimeConfig } = getConfig();
+    const { BASE_URL } = publicRuntimeConfig;
+    const ADD_SERVICE_ENDPOINT = BASE_URL + '/service/ajouter_service';
+    const router = useRouter()
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -131,13 +128,9 @@ const FormLayoutDemo = () => {
         formData.append('titre', titre);
         formData.append('description', description);
 
-
-
-
         try {
-
             if (image && titre !== '' && description !== '') {
-                const response = await fetch('http://localhost:5050/service/ajouter_service',
+                const response = await fetch(ADD_SERVICE_ENDPOINT,
                     {
                         method: 'POST',
                         body: formData,
@@ -153,10 +146,7 @@ const FormLayoutDemo = () => {
 
     }
 
-    const router = useRouter()
-    const onUpload = () => {
-        toast.current.show({ severity: 'info', summary: 'Success', detail: 'File Uploaded', life: 3000 });
-    };
+
     return (
         <div className="grid">
             <div className="col-12 md:col-6">

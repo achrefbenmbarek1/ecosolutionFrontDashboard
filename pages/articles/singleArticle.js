@@ -1,8 +1,11 @@
 import React from 'react';
 import Gallery from '../../demo/components/Gallery';
+import getConfig from 'next/config';
 
 const EmptyPage = ({data}) => {
-    const PROTOCOL_AND_HOSTNAME_PART_OF_THE_URL = 'http://localhost:5050';
+    const { publicRuntimeConfig } = getConfig();
+    const { BASE_URL } = publicRuntimeConfig;
+    const IMAGES_ARTICLE_DIRECTORY = BASE_URL + '/imagesArticle/';
     return (
         <div className="grid">
             <div className="col-12">
@@ -13,10 +16,10 @@ const EmptyPage = ({data}) => {
                     <h5>{data.description}</h5>
                     <h3>Contenu:</h3>
                     <h5>{data.contenu}</h5>
-                    <Gallery 
-                        imagePaths={Array.isArray(data.images) ? 
-                            data.images.map((imageName) => `${ PROTOCOL_AND_HOSTNAME_PART_OF_THE_URL}/imagesArticle/${imageName}`): 
-                            `${PROTOCOL_AND_HOSTNAME_PART_OF_THE_URL}/imagesArticle/${data.images}`}>
+                    <Gallery
+                        imagePaths={Array.isArray(data.images) ?
+                            data.images.map((imageName) => IMAGES_ARTICLE_DIRECTORY + imageName):
+                            IMAGES_ARTICLE_DIRECTORY + data.images}>
 
                     </Gallery>
 

@@ -9,13 +9,10 @@ import { Toast } from 'primereact/toast';
 import { ProgressBar } from 'primereact/progressbar';
 import { Tooltip } from 'primereact/tooltip';
 import { Tag } from 'primereact/tag';
+import getConfig from 'next/config';
 
 
 const FormLayoutDemo = () => {
-
-
-
-
 
     ///////////////////////////////////////////
 
@@ -115,7 +112,9 @@ const FormLayoutDemo = () => {
     //////////////////////////////////////
 
 
-
+    const { publicRuntimeConfig } = getConfig();
+    const { BASE_URL } = publicRuntimeConfig;
+    const addArticleEndpoint = BASE_URL + '/article/ajouter_article'
     const [images, setImages] = useState([]);
     const [titre, setTitre] = useState('');
     const [description, setDescription] = useState('');
@@ -136,7 +135,7 @@ const FormLayoutDemo = () => {
 
         try {
             if (images.length !== 0 && titre !== '' && description !== '' && contenu !== '') {
-                const response = await fetch('http://localhost:5050/article/ajouter_article', {
+                const response = await fetch(addArticleEndpoint, {
                     method: 'POST',
                     body: formData,
                     credentials: 'include'
